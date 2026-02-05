@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         version="4.0">
+
+    <!-- Just one test servlet -->
+    <servlet>
+        <servlet-name>reservationApi</servlet-name>
+        <servlet-class>com.oceanview.web.api.ReservationApiServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>reservationApi</servlet-name>
+        <url-pattern>/api/reservation</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>guestByContactApi</servlet-name>
+        <servlet-class>com.oceanview.web.api.GuestByContactApiServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>guestByContactApi</servlet-name>
+        <url-pattern>/api/guest-by-contact</url-pattern>
+    </servlet-mapping>
+</web-app>
