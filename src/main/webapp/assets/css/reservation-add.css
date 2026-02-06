@@ -1,0 +1,159 @@
+/* ===============================
+   RESERVATION ADD PAGE STYLES
+   =============================== */
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(
+        rgba(234,244,239,0.95),
+        rgba(234,244,239,0.95)
+    ),
+    url("../img/forest-bg.jpg");
+    background-size: cover;
+    padding: 30px;
+}
+
+/* Wrapper */
+.page-wrapper {
+    max-width: 700px;
+    margin: auto;
+}
+
+/* Topbar */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 18px 25px;
+    border-radius: 18px;
+    box-shadow: 0 12px 25px rgba(0,0,0,.12);
+}
+
+.brand {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.badge {
+    background: #eaf4ef;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.nav a {
+    text-decoration: none;
+    margin-left: 18px;
+    color: #3a7d5c;
+    font-weight: 600;
+}
+
+/* Card */
+.form-card {
+    background: #ffffff;
+    margin-top: 25px;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 14px 30px rgba(0,0,0,.12);
+}
+
+/* Sections */
+.section-title {
+    font-weight: 600;
+    color: #2f5f47;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+/* Divider */
+.divider {
+    height: 1px;
+    background: #eee;
+    margin: 20px 0;
+}
+
+/* Form */
+.form-row {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #2f5f47;
+}
+
+.input, select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #cfded6;
+    font-size: 14px;
+}
+
+.input:focus, select:focus {
+    outline: none;
+    border-color: #3a7d5c;
+    box-shadow: 0 0 0 3px rgba(58,125,92,.15);
+}
+
+/* Search row */
+.search-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.search-row .input {
+    flex: 1;
+}
+
+/* Buttons */
+.btn-primary {
+    background: #3a7d5c;
+    color: #ffffff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.btn-primary:hover {
+    background: #2f5f47;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #eaf4ef;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+/* Submit */
+.submit-section {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Info text */
+.info-text {
+    font-size: 12px;
+    color: #6c8a7b;
+}
+
+/* Error */
+.error-box {
+    background: #ffe6e6;
+    color: #b30000;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
