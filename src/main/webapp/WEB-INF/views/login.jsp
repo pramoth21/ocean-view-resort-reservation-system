@@ -9,54 +9,56 @@
 <html>
 <head>
   <title>Login | Ocean View Resort</title>
-  <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/style.css">
+  <link rel="stylesheet"
+        href="<%=request.getContextPath()%>/assets/css/login.css">
 </head>
 <body>
-<div class="container">
-  <div class="topbar">
-    <div class="brand">
-      <span>🌊 Ocean View Resort</span>
-      <span class="badge">Login</span>
+
+<div class="login-wrapper">
+
+    <div class="login-card">
+
+        <div class="login-header">
+            <h2>🌿 Ocean View Resort</h2>
+            <p class="role"><%=role%> Login</p>
+        </div>
+
+        <% if(error != null){ %>
+            <div class="error-box"><%=error%></div>
+        <% } %>
+
+        <form method="post"
+              action="<%=request.getContextPath()%>/login">
+
+            <input type="hidden" name="role" value="<%=role%>">
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text"
+                       name="username"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password"
+                       name="password"
+                       required>
+            </div>
+
+            <button class="btn-login">
+                Login →
+            </button>
+
+        </form>
+
+        <div class="login-footer">
+            <a href="<%=request.getContextPath()%>/home">Back to Home</a>
+        </div>
+
     </div>
-    <div class="nav">
-      <a href="<%=request.getContextPath()%>/home">Home</a>
-      <a href="<%=request.getContextPath()%>/help">Help</a>
-    </div>
-  </div>
 
-  <div style="height:16px"></div>
-
-  <div class="card" style="max-width:520px; margin:0 auto;">
-    <h2><%=role%> Login</h2>
-    <p>Enter your username and password to continue.</p>
-
-    <% if(error != null){ %>
-      <div class="msg err"><%=error%></div>
-      <div style="height:10px"></div>
-    <% } %>
-
-    <form method="post" action="<%=request.getContextPath()%>/login">
-      <input type="hidden" name="role" value="<%=role%>"/>
-
-      <div class="row">
-        <label>Username</label>
-        <input class="input" name="username" placeholder="e.g. receptionist1" />
-      </div>
-
-      <div class="row">
-        <label>Password</label>
-        <input class="input" type="password" name="password" placeholder="••••••••" />
-      </div>
-
-      <div style="height:14px"></div>
-
-      <button class="btn" type="submit">Login →</button>
-      <a class="btn btn-ghost" href="<%=request.getContextPath()%>/home">Cancel</a>
-    </form>
-
-    <div style="height:10px"></div>
-    <small>Tip: If you are Admin, you can create receptionist accounts from the Admin dashboard.</small>
-  </div>
 </div>
+
 </body>
 </html>

@@ -1,59 +1,135 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.util.List,com.oceanview.model.Reservation" %>
+
 <%
-  Object revenueObj = request.getAttribute("revenue");
-  double revenue = (revenueObj instanceof Double) ? (Double)revenueObj : 0.0;
+    Object revenueObj = request.getAttribute("revenue");
+    double revenue = (revenueObj instanceof Double) ? (Double) revenueObj : 0.0;
+
+    List<Reservation> reservations =
+            (List<Reservation>) request.getAttribute("reservations");
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin | Dashboard</title>
-  <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/style.css">
+    <title>Admin Dashboard | Ocean View Resort</title>
+    <link rel="stylesheet"
+          href="<%=request.getContextPath()%>/assets/css/admin-dashboard.css">
 </head>
 <body>
-<div class="container">
-  <div class="topbar">
-    <div class="brand"><span>🛡️ Admin Panel</span><span class="badge">Manager</span></div>
-    <div class="nav">
-      <a href="<%=request.getContextPath()%>/admin/users">Manage Receptionists</a>
-      <a href="<%=request.getContextPath()%>/admin/reports">Reports</a>
-      <a href="<%=request.getContextPath()%>/logout">Logout</a>
-    </div>
-  </div>
 
-  <div style="height:16px"></div>
+<div class="dashboard-wrapper">
 
-  <div class="grid grid-2">
-    <div class="card">
-      <h2>Total Revenue</h2>
-      <p>Calculated from stored bills.</p>
-      <div class="msg ok" style="font-size:22px;">
-        LKR <b><%=String.format("%,.2f", revenue)%></b>
-      </div>
-      <div style="height:8px"></div>
-      <button class="btn btn-ghost" onclick="loadRevenue()">Refresh (API)</button>
-      <small id="revMsg"></small>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <div class="title">
+            🛡️ Admin Dashboard
+            <span class="badge">Manager Panel</span>
+        </div>
+
+        <div class="nav">
+            <a href="<%=request.getContextPath()%>/admin/users">Users</a>
+            <a href="<%=request.getContextPath()%>/admin/reports">Reports</a>
+            <a href="<%=request.getContextPath()%>/logout">Logout</a>
+        </div>
     </div>
 
-    <div class="card">
-      <h2>Admin Tools</h2>
-      <p>Create receptionist accounts and control system access securely.</p>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <a class="btn" href="<%=request.getContextPath()%>/admin/users">Receptionist Accounts →</a>
-        <a class="btn btn-ghost" href="<%=request.getContextPath()%>/help">Help</a>
-      </div>
-      <small>Admins do NOT create reservations (role separation).</small>
+    <!-- ===== SUMMARY CARDS ===== -->
+    <div class="summary-grid">
+
+        <div class="summary-card revenue">
+            <h3>Total Revenue</h3>
+            <p>LKR <%=String.format("%,.2f", revenue)%></p>
+        </div>
+
+        <div class="summary-card count">
+            <h3>Active Reservations</h3>
+            <p><%= (reservations != null) ? reservations.size() : 0 %></p>
+        </div>
+
+        <div class="summary-card system">
+            <h3>System Status</h3>
+            <p class="online">Online</p>
+        </div>
+
     </div>
-  </div>
+
+    <!-- ===== MANAGEMENT SECTION ===== -->
+    <div class="management-section">
+        <h2>System Management</h2>
+
+        <div class="management-grid">
+
+            <!-- ✅ UPDATED: One unified Room Management page -->
+            <a class="manage-btn"
+               href="<%=request.getContextPath()%>/admin/rooms">
+                Manage Rooms & Types
+            </a>
+
+            <a class="manage-btn"
+               href="<%=request.getContextPath()%>/admin/rates">
+                Manage Room Rates
+            </a>
+
+            <a class="manage-btn"
+               href="<%=request.getContextPath()%>/admin/services">
+                Manage Services
+            </a>
+
+            <a class="manage-btn"
+               href="<%=request.getContextPath()%>/admin/users">
+                Manage Users
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ===== ACTIVE RESERVATIONS ===== -->
+    <div class="reservation-section">
+        <h2>Active Reservations</h2>
+
+        <table class="reservation-table">
+            <tr>
+                <th>ID</th>
+                <th>Guest</th>
+                <th>Room Type</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+            <% if (reservations != null && !reservations.isEmpty()) { %>
+                <% for (Reservation r : reservations) { %>
+                    <tr>
+                        <td><%=r.getReservationNo()%></td>
+                        <td><%=r.getGuest().getName()%></td>
+                        <td><%=r.getRoomType()%></td>
+                        <td><%=r.getStatus()%></td>
+                        <td>
+                            <a class="view-btn"
+                               href="<%=request.getContextPath()%>/receptionist/reservations/view?id=<%=r.getReservationNo()%>">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                <% } %>
+            <% } else { %>
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        No active reservations.
+                    </td>
+                </tr>
+            <% } %>
+
+        </table>
+    </div>
+
 </div>
 
 <script>
-async function loadRevenue(){
-  const msg = document.getElementById("revMsg");
-  msg.textContent = "Loading...";
-  const res = await fetch("<%=request.getContextPath()%>/api/revenue");
-  const data = await res.json();
-  msg.textContent = data.ok ? ("API Revenue: " + data.revenue) : "Failed to load revenue.";
-}
+    window.APP_CTX = "<%=request.getContextPath()%>";
 </script>
+
+<script src="<%=request.getContextPath()%>/assets/js/app.js"></script>
+
 </body>
 </html>

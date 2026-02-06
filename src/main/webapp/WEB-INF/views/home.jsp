@@ -2,43 +2,103 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ocean View Resort | Home</title>
-  <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/style.css">
+    <title>Ocean View Resort | Welcome</title>
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/style.css">
 </head>
-<body>
-<div class="container">
-  <div class="topbar">
-    <div class="brand">
-      <span>🌊 Ocean View Resort</span>
-      <span class="badge">Reservation System</span>
-    </div>
-    <div class="nav">
-      <a href="<%=request.getContextPath()%>/help">Help</a>
-    </div>
+<body class="eco-bg">
+
+<div class="page">
+
+    <!-- ===== HEADER ===== -->
+    <header class="header eco-glass fade-in">
+        <div class="logo">
+            🌿 Ocean View Resort
+            <span class="tagline">Eco-Friendly Reservation System</span>
+        </div>
+        <nav>
+            <a href="<%=request.getContextPath()%>/help">Help</a>
+        </nav>
+    </header>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero eco-card slide-up">
+
+        <div class="hero-text">
+            <h1>Welcome to Ocean View Resort</h1>
+
+            <p class="subtitle">
+                Sustainable hospitality · Seamless reservations
+            </p>
+
+            <div class="divider"></div>
+
+            <p class="description">
+                This system helps our staff manage guests,
+                reservations, and billing efficiently while
+                supporting eco-friendly tourism.
+            </p>
+        </div>
+
+      <div class="hero-image album">
+          <img class="album-img back"
+               src="assets/img/eco-resort-2.jpg"
+               alt="Resort View Side">
+
+          <img class="album-img front"
+               src="assets/img/eco-resort.jpg"
+               alt="Eco Resort Main">
+      </div>
+
+    </section>
+
+    <!-- ===== ROLE SELECTION ===== -->
+    <section class="roles">
+
+        <!-- Receptionist -->
+  <div class="role-card role-bg"
+       style="background-image:url('<%=request.getContextPath()%>/assets/img/reception.jpg')">
+
+      <div class="role-overlay">
+          <h2>Receptionist</h2>
+          <p>
+              Register guests, create and manage reservations,
+              handle modifications, cancellations, and billing.
+          </p>
+
+          <a class="btn-primary"
+             href="<%=request.getContextPath()%>/login?role=RECEPTIONIST">
+              Go to Reception →
+          </a>
+      </div>
   </div>
 
-  <div style="height:16px"></div>
+        <!-- Admin -->
+       <div class="role-card role-bg"
+            style="background-image:url('<%=request.getContextPath()%>/assets/img/manager.jpg')">
 
-  <div class="grid grid-2">
-    <div class="card">
-      <h2>Receptionist</h2>
-      <p>Manage reservations, register guests, and generate bills.</p>
-      <a class="btn" href="<%=request.getContextPath()%>/login?role=RECEPTIONIST">Receptionist Login →</a>
-    </div>
+           <div class="role-overlay">
+               <h2>Admin / Manager</h2>
+               <p>
+                   View revenue reports, manage receptionist accounts,
+                   and oversee system operations.
+               </p>
 
-    <div class="card">
-      <h2>Admin / Manager</h2>
-      <p>View revenue, generate reports, and manage receptionist accounts.</p>
-      <a class="btn" href="<%=request.getContextPath()%>/login?role=ADMIN">Admin Login →</a>
-    </div>
-  </div>
+               <a class="btn-outline"
+                  href="<%=request.getContextPath()%>/login?role=ADMIN">
+                   Go to Management →
+               </a>
+           </div>
+       </div>
 
-  <div style="height:16px"></div>
+    </section>
 
-  <div class="card">
-    <h3>Why this system?</h3>
-    <p>Prevents booking conflicts, stores guest records securely, calculates bills automatically, and restricts access using role-based login.</p>
-  </div>
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        © 2026 Ocean View Resort · Galle · Sri Lanka<br>
+        🌱 Committed to sustainable tourism
+    </footer>
+
 </div>
+
 </body>
 </html>

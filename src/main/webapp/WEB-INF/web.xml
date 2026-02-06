@@ -153,6 +153,7 @@
         <url-pattern>/admin/users/create</url-pattern>
     </servlet-mapping>
 
+
     <!-- ===== JSON APIs ===== -->
     <servlet>
         <servlet-name>ReservationApi</servlet-name>
@@ -179,6 +180,102 @@
     <servlet-mapping>
         <servlet-name>RevenueApi</servlet-name>
         <url-pattern>/api/revenue</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>GuestSearchApi</servlet-name>
+        <servlet-class>com.oceanview.web.api.GuestSearchApiServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GuestSearchApi</servlet-name>
+        <url-pattern>/api/guestSearch</url-pattern>
+    </servlet-mapping>
+
+    <!-- Available Rooms API -->
+    <servlet>
+        <servlet-name>AvailableRoomsApi</servlet-name>
+        <servlet-class>com.oceanview.web.api.AvailableRoomsApiServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AvailableRoomsApi</servlet-name>
+        <url-pattern>/api/availableRooms</url-pattern>
+    </servlet-mapping>
+
+    <!-- Daily Income API -->
+    <servlet>
+        <servlet-name>DailyIncomeApi</servlet-name>
+        <servlet-class>com.oceanview.web.api.DailyIncomeApiServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DailyIncomeApi</servlet-name>
+        <url-pattern>/api/dailyIncome</url-pattern>
+    </servlet-mapping>
+
+
+    <!-- ===== ADMIN ROOM TYPES ===== -->
+    <servlet>
+        <servlet-name>AdminRoomTypes</servlet-name>
+        <servlet-class>com.oceanview.web.servlet.admin.AdminRoomTypesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminRoomTypes</servlet-name>
+        <url-pattern>/admin/roomtypes</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminRoomTypeEdit</servlet-name>
+        <servlet-class>com.oceanview.web.servlet.admin.AdminRoomTypeEditServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminRoomTypeEdit</servlet-name>
+        <url-pattern>/admin/roomtypes/edit</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminRoomTypeToggle</servlet-name>
+        <servlet-class>com.oceanview.web.servlet.admin.AdminRoomTypeToggleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminRoomTypeToggle</servlet-name>
+        <url-pattern>/admin/roomtypes/toggle</url-pattern>
+    </servlet-mapping>
+
+    <!-- ===== ADMIN ROOMS ===== -->
+    <servlet>
+        <servlet-name>AdminRooms</servlet-name>
+        <servlet-class>com.oceanview.web.servlet.admin.AdminRoomsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminRooms</servlet-name>
+        <url-pattern>/admin/rooms</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminRoomToggle</servlet-name>
+        <servlet-class>com.oceanview.web.servlet.admin.AdminRoomToggleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminRoomToggle</servlet-name>
+        <url-pattern>/admin/rooms/toggle</url-pattern>
+    </servlet-mapping>
+
+    <!-- ===== ADMIN RATES ===== -->
+    <servlet>
+        <servlet-name>AdminRates</servlet-name>
+        <servlet-class>com.oceanview.web.servlet.admin.AdminRatesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminRates</servlet-name>
+        <url-pattern>/admin/rates</url-pattern>
+    </servlet-mapping>
+
+    <!-- ===== ADMIN SERVICES ===== -->
+    <servlet>
+        <servlet-name>AdminServices</servlet-name>
+        <servlet-class>com.oceanview.web.servlet.admin.AdminServicesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminServices</servlet-name>
+        <url-pattern>/admin/services</url-pattern>
     </servlet-mapping>
 
 </web-app>

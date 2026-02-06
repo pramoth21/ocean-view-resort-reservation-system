@@ -22,8 +22,16 @@ public class AuthFilter implements Filter {
                 path.endsWith("index.jsp") ||
                         path.endsWith("/") ||
                         path.contains("/login") ||
+                        path.contains("/home") ||
+
+                        // ✅ allow static resources
+                        path.contains("/assets/") ||
                         path.contains("/css/") ||
-                        path.contains("/home");
+                        path.contains("/img/") ||
+                        path.contains("/js/") ||
+
+                        // ✅ allow APIs if needed
+                        path.contains("/api/");
 
         if (isPublic) {
             chain.doFilter(request, response);
