@@ -2,87 +2,195 @@
 <%
   com.oceanview.model.Reservation r =
       (com.oceanview.model.Reservation) request.getAttribute("reservation");
+
   String error = (String) request.getAttribute("error");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Modify Reservation</title>
-  <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/style.css">
+  <title>Modify Reservation | Ocean View Resort</title>
+
+  <link rel="stylesheet"
+        href="<%=request.getContextPath()%>/assets/css/modify-reservation.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="container">
 
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="brand">
-      <span>✏️ Modify Reservation</span>
-      <span class="badge">Receptionist</span>
-    </div>
-    <div class="nav">
-      <a href="<%=request.getContextPath()%>/receptionist">Dashboard</a>
-      <a href="#" onclick="confirmLogout()">Logout</a>
-    </div>
-  </div>
+<div class="layout">
 
-  <div style="height:16px"></div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
 
-  <!-- CARD -->
-  <div class="card">
+      <div class="logo">🌊 Ocean View</div>
 
-    <% if(error != null){ %>
-      <div class="msg err"><%=error%></div>
-    <% } %>
+      <ul class="menu">
 
-    <% if(r != null){ %>
-    <form method="post"
-          action="<%=request.getContextPath()%>/receptionist/reservations/modify">
+          <li>
+              <a href="<%=request.getContextPath()%>/receptionist">
+                  Dashboard
+              </a>
+          </li>
 
-      <!-- Hidden ID -->
-      <input type="hidden" name="reservationNo"
-             value="<%=r.getReservationNo()%>">
+          <li>
+              <a href="<%=request.getContextPath()%>/receptionist/reservations/add">
+                  Add Reservation
+              </a>
+          </li>
 
-      <p><b>Guest:</b> <%=r.getGuest().getName()%></p>
-      <p><b>Contact:</b> <%=r.getGuest().getContactNumber()%></p>
+          <li class="active">
+              Modify Reservation
+          </li>
 
-      <div class="row">
-        <label>Room Type</label>
-        <select name="roomType">
-          <option <%= "STANDARD".equals(r.getRoomType()) ? "selected" : "" %>>
-            STANDARD
-          </option>
-          <option <%= "DELUXE".equals(r.getRoomType()) ? "selected" : "" %>>
-            DELUXE
-          </option>
-        </select>
+          <li>
+              <a href="<%=request.getContextPath()%>/receptionist/bill">
+                  Generate Bill
+              </a>
+          </li>
+
+          <li>
+              <a href="javascript:void(0)" onclick="confirmLogout()">
+                  Logout
+              </a>
+          </li>
+
+      </ul>
+
+  </aside>
+
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+      <div class="page-header">
+
+          <h2>✏ Modify Reservation</h2>
+
+          <a class="btn ghost"
+             href="<%=request.getContextPath()%>/receptionist">
+             ← Back
+          </a>
+
       </div>
 
-      <div class="row">
-        <label>Check-in Date</label>
-        <input class="input" type="date"
-               name="checkIn" value="<%=r.getCheckIn()%>">
+
+      <div class="card">
+
+        <% if(error != null){ %>
+          <div class="msg err"><%=error%></div>
+        <% } %>
+
+
+        <% if(r != null){ %>
+
+        <form method="post"
+              action="<%=request.getContextPath()%>/receptionist/reservations/modify">
+
+          <input type="hidden"
+                 name="reservationNo"
+                 value="<%=r.getReservationNo()%>">
+
+
+          <!-- Guest Info Card -->
+          <div class="guest-box">
+
+              <div class="guest-item">
+                  <label>Guest Name</label>
+                  <div class="guest-value">
+                      <%=r.getGuest().getName()%>
+                  </div>
+              </div>
+
+              <div class="guest-item">
+                  <label>Contact Number</label>
+                  <div class="guest-value">
+                      <%=r.getGuest().getContactNumber()%>
+                  </div>
+              </div>
+
+          </div>
+
+
+          <!-- Form Grid -->
+          <div class="form-grid">
+
+              <div class="form-group">
+
+                  <label>Room Type</label>
+
+                  <select name="roomType" class="input">
+
+                      <option value="STANDARD"
+                        <%= "STANDARD".equals(r.getRoomType()) ? "selected" : "" %>>
+                        STANDARD
+                      </option>
+
+                      <option value="DELUXE"
+                        <%= "DELUXE".equals(r.getRoomType()) ? "selected" : "" %>>
+                        DELUXE
+                      </option>
+
+                      <option value="SUITE"
+                        <%= "SUITE".equals(r.getRoomType()) ? "selected" : "" %>>
+                        SUITE
+                      </option>
+
+                  </select>
+
+              </div>
+
+
+              <div class="form-group">
+
+                  <label>Check-in Date</label>
+
+                  <input type="date"
+                         name="checkIn"
+                         class="input"
+                         value="<%=r.getCheckIn()%>">
+
+              </div>
+
+
+              <div class="form-group">
+
+                  <label>Check-out Date</label>
+
+                  <input type="date"
+                         name="checkOut"
+                         class="input"
+                         value="<%=r.getCheckOut()%>">
+
+              </div>
+
+          </div>
+
+
+          <!-- Buttons -->
+          <div class="action-row">
+
+              <button class="btn primary">
+                  Update Reservation
+              </button>
+
+              <a class="btn ghost"
+                 href="<%=request.getContextPath()%>/receptionist">
+                 Cancel
+              </a>
+
+          </div>
+
+        </form>
+
+        <% } %>
+
       </div>
 
-      <div class="row">
-        <label>Check-out Date</label>
-        <input class="input" type="date"
-               name="checkOut" value="<%=r.getCheckOut()%>">
-      </div>
-
-      <div style="height:14px"></div>
-
-      <button class="btn">Update Reservation →</button>
-      <a class="btn btn-ghost"
-         href="<%=request.getContextPath()%>/receptionist">
-         Cancel
-      </a>
-    </form>
-    <% } %>
-
-  </div>
+  </main>
 
 </div>
 
 <script src="<%=request.getContextPath()%>/assets/js/app.js"></script>
+
 </body>
 </html>

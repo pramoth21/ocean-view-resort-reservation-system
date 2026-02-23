@@ -3,9 +3,9 @@
     --primary-dark:#023e8a;
     --bg:#f4f8fb;
     --card:#ffffff;
-    --text:#1b2a33;
     --muted:#6c8a96;
-    --radius:18px;
+    --success:#28a745;
+    --danger:#dc3545;
 }
 
 body{
@@ -17,8 +17,6 @@ body{
 .layout{
     display:flex;
 }
-
-/* Sidebar */
 
 .sidebar{
     width:250px;
@@ -45,35 +43,22 @@ body{
 
 .menu a{
     text-decoration:none;
-    color:#e8f6ff;
-    padding:10px 15px;
-    display:block;
-    border-radius:12px;
-}
-
-.menu a:hover{
-    background:rgba(255,255,255,0.15);
+    color:#fff;
 }
 
 .menu .active{
-    background:rgba(255,255,255,0.25);
-    padding:10px 15px;
-    border-radius:12px;
+    font-weight:600;
 }
-
-/* Main */
 
 .main-content{
     flex:1;
     padding:40px;
 }
 
-/* Header */
-
 .page-header{
     display:flex;
     justify-content:space-between;
-    margin-bottom:25px;
+    margin-bottom:20px;
 }
 
 .badge{
@@ -82,38 +67,34 @@ body{
     border-radius:999px;
 }
 
-/* Cards */
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
 
 .card{
     background:var(--card);
     padding:25px;
-    border-radius:var(--radius);
-    box-shadow:0 15px 30px rgba(0,0,0,.05);
-    margin-bottom:20px;
+    border-radius:15px;
 }
 
-.summary-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
+.form-group{
+    margin-bottom:12px;
 }
 
-.value{
-    font-size:24px;
-    font-weight:600;
-    margin-top:8px;
+.input{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ddd;
 }
-
-.online{
-    color:#28a745;
-}
-
-/* Buttons */
 
 .btn{
     padding:8px 16px;
     border-radius:999px;
-    text-decoration:none;
+    border:none;
+    cursor:pointer;
 }
 
 .btn.primary{
@@ -121,24 +102,9 @@ body{
     color:#fff;
 }
 
-.btn.primary:hover{
-    background:var(--primary-dark);
-}
-
 .btn.ghost{
     background:#eef6fb;
-    color:var(--primary);
 }
-
-/* Management */
-
-.management-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:15px;
-}
-
-/* Table */
 
 .table{
     width:100%;
@@ -146,18 +112,22 @@ body{
 }
 
 .table th{
-    text-align:left;
-    padding:12px;
     background:#eef6fb;
+    padding:10px;
 }
 
 .table td{
-    padding:12px;
-    border-bottom:1px solid #eee;
+    padding:10px;
 }
 
-.status{
-    background:#eef6fb;
-    padding:4px 10px;
-    border-radius:999px;
+.section-title{
+    margin-top:25px;
+}
+
+.status-active{
+    color:var(--success);
+}
+
+.status-inactive{
+    color:var(--danger);
 }

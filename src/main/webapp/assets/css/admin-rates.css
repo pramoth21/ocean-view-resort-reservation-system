@@ -3,9 +3,9 @@
     --primary-dark:#023e8a;
     --bg:#f4f8fb;
     --card:#ffffff;
-    --text:#1b2a33;
     --muted:#6c8a96;
-    --radius:18px;
+    --danger:#dc3545;
+    --success:#28a745;
 }
 
 body{
@@ -44,21 +44,12 @@ body{
 }
 
 .menu a{
+    color:#fff;
     text-decoration:none;
-    color:#e8f6ff;
-    padding:10px 15px;
-    display:block;
-    border-radius:12px;
-}
-
-.menu a:hover{
-    background:rgba(255,255,255,0.15);
 }
 
 .menu .active{
-    background:rgba(255,255,255,0.25);
-    padding:10px 15px;
-    border-radius:12px;
+    font-weight:600;
 }
 
 /* Main */
@@ -67,8 +58,6 @@ body{
     flex:1;
     padding:40px;
 }
-
-/* Header */
 
 .page-header{
     display:flex;
@@ -84,36 +73,42 @@ body{
 
 /* Cards */
 
-.card{
-    background:var(--card);
-    padding:25px;
-    border-radius:var(--radius);
-    box-shadow:0 15px 30px rgba(0,0,0,.05);
-    margin-bottom:20px;
-}
-
-.summary-grid{
+.grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:1fr 2fr;
     gap:20px;
 }
 
-.value{
-    font-size:24px;
-    font-weight:600;
-    margin-top:8px;
+.card{
+    background:var(--card);
+    padding:25px;
+    border-radius:15px;
 }
 
-.online{
-    color:#28a745;
+/* Form */
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.input{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+.input.small{
+    width:100px;
 }
 
 /* Buttons */
 
 .btn{
-    padding:8px 16px;
+    padding:6px 14px;
     border-radius:999px;
-    text-decoration:none;
+    border:none;
+    cursor:pointer;
 }
 
 .btn.primary{
@@ -121,21 +116,18 @@ body{
     color:#fff;
 }
 
-.btn.primary:hover{
-    background:var(--primary-dark);
-}
-
 .btn.ghost{
     background:#eef6fb;
-    color:var(--primary);
 }
 
-/* Management */
+.btn.danger{
+    background:var(--danger);
+    color:#fff;
+}
 
-.management-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:15px;
+.btn.success{
+    background:var(--success);
+    color:#fff;
 }
 
 /* Table */
@@ -146,18 +138,24 @@ body{
 }
 
 .table th{
-    text-align:left;
-    padding:12px;
     background:#eef6fb;
+    padding:10px;
 }
 
 .table td{
-    padding:12px;
-    border-bottom:1px solid #eee;
+    padding:10px;
 }
 
-.status{
-    background:#eef6fb;
-    padding:4px 10px;
-    border-radius:999px;
+/* Status */
+
+.status-active{
+    color:var(--success);
+}
+
+.status-inactive{
+    color:var(--danger);
+}
+
+.inline{
+    display:inline-block;
 }

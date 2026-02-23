@@ -12,62 +12,125 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Generate Bill</title>
-  <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/style.css">
+  <title>Generate Bill | Ocean View Resort</title>
+
+  <link rel="stylesheet"
+        href="<%=request.getContextPath()%>/assets/css/bill-calculator.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="container">
 
-  <div class="topbar">
-    <div class="brand">
-      <span>💰 Billing</span>
-      <span class="badge">Receptionist</span>
-    </div>
-    <div class="nav">
-      <a href="<%=request.getContextPath()%>/receptionist">Back</a>
-      <a href="#" onclick="confirmLogout()">Logout</a>
-    </div>
-  </div>
+<div class="layout">
 
-  <div class="card">
-    <% if(error != null){ %>
-      <div class="msg err"><%=error%></div>
-    <% } %>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">🌊 Ocean View</div>
 
-    <form method="post">
-      <div class="row">
-        <label>Reservation Number</label>
-        <input class="input" name="id">
-      </div>
+        <ul class="menu">
+            <li>
+                <a href="<%=request.getContextPath()%>/receptionist">
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="<%=request.getContextPath()%>/receptionist/reservations/add">
+                    Add Reservation
+                </a>
+            </li>
+            <li class="active">
+                Generate Bill
+            </li>
+            <li>
+                <a href="javascript:void(0)" onclick="confirmLogout()">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </aside>
 
-      <div class="row">
-        <label>Discount (%)</label>
-        <input class="input" name="discount" value="0">
-      </div>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
 
-      <div class="row">
-        <label>Extras</label>
-        <label><input type="checkbox" name="extra" value="POOL"> Pool Usage</label><br>
-        <label><input type="checkbox" name="extra" value="DINING"> Dining Package</label><br>
-        <label><input type="checkbox" name="extra" value="LAUNDRY"> Laundry</label>
-      </div>
+        <div class="page-header">
+            <h2>💰 Generate Bill</h2>
+            <span class="badge">Receptionist</span>
+        </div>
 
-      <button class="btn">Calculate Bill</button>
-    </form>
+        <div class="bill-grid">
 
-    <% if(bill != null && r != null){ %>
-      <div style="height:14px"></div>
-      <div class="msg ok">
-        Guest: <b><%=r.getGuest().getName()%></b><br>
-        Nights: <%=bill.getNights()%><br>
-        Rate: <%=String.format("%,.2f", bill.getRate())%><br>
-        Room Total (after discount): <b>LKR <%=String.format("%,.2f", bill.getTotal())%></b><br>
-        Extras Total: <b>LKR <%=String.format("%,.2f", extrasTotal)%></b><br>
-        <hr>
-        Grand Total: <b style="font-size:18px;">LKR <%=String.format("%,.2f", grandTotal)%></b>
-      </div>
-    <% } %>
-  </div>
+            <!-- LEFT FORM CARD -->
+            <div class="card">
+
+                <% if(error != null){ %>
+                    <div class="msg err"><%=error%></div>
+                <% } %>
+
+                <form method="post">
+
+                    <div class="form-group">
+                        <label>Reservation Number</label>
+                        <input class="input" name="id">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Discount (%)</label>
+                        <input class="input" name="discount" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Extras</label>
+
+                        <label class="check">
+                            <input type="checkbox" name="extra" value="POOL">
+                            Pool Usage
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox" name="extra" value="DINING">
+                            Dining Package
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox" name="extra" value="LAUNDRY">
+                            Laundry
+                        </label>
+                    </div>
+
+                    <button class="btn primary">
+                        Calculate Bill
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- RIGHT RESULT CARD -->
+            <div class="card result-card">
+
+                <div class="result-header">
+                    Final Amount
+                </div>
+
+                <div class="amount">
+                    LKR <%=String.format("%,.2f", grandTotal)%>
+                </div>
+
+                <% if(bill != null && r != null){ %>
+                    <div class="details">
+                        <p><b>Guest:</b> <%=r.getGuest().getName()%></p>
+                        <p><b>Nights:</b> <%=bill.getNights()%></p>
+                        <p><b>Room Rate:</b> LKR <%=String.format("%,.2f", bill.getRate())%></p>
+                        <p><b>Room Total:</b> LKR <%=String.format("%,.2f", bill.getTotal())%></p>
+                        <p><b>Extras:</b> LKR <%=String.format("%,.2f", extrasTotal)%></p>
+                    </div>
+                <% } %>
+
+            </div>
+
+        </div>
+
+    </main>
 
 </div>
 

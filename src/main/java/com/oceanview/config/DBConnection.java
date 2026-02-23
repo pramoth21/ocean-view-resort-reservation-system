@@ -35,4 +35,5 @@ public class DBConnection {
                 DBConfig.JDBC_PASS
         );
     }
+
 }

@@ -3,9 +3,8 @@
     --primary-dark:#023e8a;
     --bg:#f4f8fb;
     --card:#ffffff;
-    --text:#1b2a33;
-    --muted:#6c8a96;
-    --radius:18px;
+    --success:#28a745;
+    --danger:#dc3545;
 }
 
 body{
@@ -18,7 +17,7 @@ body{
     display:flex;
 }
 
-/* Sidebar */
+/* SIDEBAR */
 
 .sidebar{
     width:250px;
@@ -45,30 +44,19 @@ body{
 
 .menu a{
     text-decoration:none;
-    color:#e8f6ff;
-    padding:10px 15px;
-    display:block;
-    border-radius:12px;
-}
-
-.menu a:hover{
-    background:rgba(255,255,255,0.15);
+    color:#fff;
 }
 
 .menu .active{
-    background:rgba(255,255,255,0.25);
-    padding:10px 15px;
-    border-radius:12px;
+    font-weight:600;
 }
 
-/* Main */
+/* MAIN */
 
 .main-content{
     flex:1;
     padding:40px;
 }
-
-/* Header */
 
 .page-header{
     display:flex;
@@ -82,38 +70,42 @@ body{
     border-radius:999px;
 }
 
-/* Cards */
+/* GRID */
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 2fr;
+    gap:20px;
+}
+
+/* CARD */
 
 .card{
     background:var(--card);
     padding:25px;
-    border-radius:var(--radius);
-    box-shadow:0 15px 30px rgba(0,0,0,.05);
-    margin-bottom:20px;
+    border-radius:15px;
 }
 
-.summary-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
+/* FORM */
+
+.form-group{
+    margin-bottom:15px;
 }
 
-.value{
-    font-size:24px;
-    font-weight:600;
-    margin-top:8px;
+.input{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ddd;
 }
 
-.online{
-    color:#28a745;
-}
-
-/* Buttons */
+/* BUTTON */
 
 .btn{
-    padding:8px 16px;
+    padding:10px 18px;
     border-radius:999px;
-    text-decoration:none;
+    border:none;
+    cursor:pointer;
 }
 
 .btn.primary{
@@ -121,24 +113,12 @@ body{
     color:#fff;
 }
 
-.btn.primary:hover{
-    background:var(--primary-dark);
+.btn.danger{
+    background:var(--danger);
+    color:#fff;
 }
 
-.btn.ghost{
-    background:#eef6fb;
-    color:var(--primary);
-}
-
-/* Management */
-
-.management-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:15px;
-}
-
-/* Table */
+/* TABLE */
 
 .table{
     width:100%;
@@ -146,18 +126,32 @@ body{
 }
 
 .table th{
-    text-align:left;
-    padding:12px;
     background:#eef6fb;
+    padding:10px;
 }
 
 .table td{
-    padding:12px;
-    border-bottom:1px solid #eee;
+    padding:10px;
 }
 
-.status{
-    background:#eef6fb;
-    padding:4px 10px;
-    border-radius:999px;
+/* MESSAGE */
+
+.msg{
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+.msg.success{
+    background:#e6f7ed;
+    color:#28a745;
+}
+
+.msg.error{
+    background:#ffe6e6;
+    color:#dc3545;
+}
+
+.inline{
+    display:inline;
 }

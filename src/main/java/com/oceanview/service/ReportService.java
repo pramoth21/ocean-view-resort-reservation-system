@@ -34,9 +34,7 @@ public class ReportService {
         return 0.0;
     }
 
-    /**
-     * Revenue for a specific date (used for daily graph).
-     */
+
     public double getRevenueForDate(LocalDate date) {
 
         String sql =

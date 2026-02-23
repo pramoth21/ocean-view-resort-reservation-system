@@ -1,13 +1,13 @@
 package com.oceanview.service;
 
-import com.oceanview.dao.DaoFactory;
+import com.oceanview.config.DBConnection;
 import com.oceanview.model.Bill;
 import com.oceanview.model.Reservation;
-import com.oceanview.model.RoomRate2;
 import com.oceanview.util.DateUtil;
 
-import java.util.List;
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class BillingService {
 
@@ -18,25 +18,21 @@ public class BillingService {
                 reservation.getCheckOut()
         );
 
-        // 🔥 Use NEW room_rates2 table
-        List<RoomRate2> rates = DaoFactory.roomRate2Dao().findAll();
-
-        double ratePerNight = 0.0;
-
-        for (RoomRate2 r : rates) {
-            if (r.getTypeCode().equalsIgnoreCase(reservation.getRoomType())
-                    && r.isActive()) {
-                ratePerNight = r.getPricePerNight();
-                break;
-            }
+        if (nights <= 0) {
+            throw new RuntimeException("Invalid check-in / check-out dates.");
         }
+
+        double ratePerNight = findActiveRate(reservation.getRoomType());
 
         if (ratePerNight == 0.0) {
             throw new RuntimeException(
-                    "Active room rate not found for type: "
+                    "No active room rate found for type: "
                             + reservation.getRoomType()
             );
         }
+
+        if (discountPercent < 0) discountPercent = 0;
+        if (discountPercent > 100) discountPercent = 100;
 
         double gross = nights * ratePerNight;
         double discount = gross * (discountPercent / 100.0);
@@ -49,5 +45,32 @@ public class BillingService {
                 discount,
                 total
         );
+    }
+
+    private double findActiveRate(String typeCode) {
+
+        String sql =
+                "SELECT rr.price_per_night " +
+                        "FROM room_rates2 rr " +
+                        "JOIN room_types rt ON rr.room_type_id = rt.room_type_id " +
+                        "WHERE rt.type_code = ? AND rr.is_active = 1 " +
+                        "ORDER BY rr.created_at DESC LIMIT 1";
+
+        try (Connection con = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, typeCode);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("price_per_night");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0.0;
     }
 }

@@ -10,10 +10,7 @@ import com.oceanview.service.ReservationService;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Map;
 
 public class BillServlet extends HttpServlet {
@@ -22,108 +19,186 @@ public class BillServlet extends HttpServlet {
     private final BillingService billingService = new BillingService();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/views/bill.jsp").forward(req, resp);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
+                .forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
         try {
-            int reservationId = Integer.parseInt(req.getParameter("id"));
 
-            double discountPercent = 0.0;
-            try { discountPercent = Double.parseDouble(req.getParameter("discount")); } catch (Exception ignored) {}
+            String idStr = req.getParameter("id");
 
-            // extras (POOL, DINING, LAUNDRY)
-            String[] extras = req.getParameterValues("extra");
+            if (idStr == null || idStr.trim().isEmpty()) {
+                req.setAttribute("error", "Reservation number is required.");
+                req.getRequestDispatcher("/WEB-INF/views/bill.jsp").forward(req, resp);
+                return;
+            }
+
+            int reservationId = Integer.parseInt(idStr.trim());
 
             Reservation r = reservationService.getReservation(reservationId);
+
             if (r == null) {
                 req.setAttribute("error", "Reservation not found.");
                 req.getRequestDispatcher("/WEB-INF/views/bill.jsp").forward(req, resp);
                 return;
             }
 
-            // base room bill (discount applies only to room part)
-            Bill baseBill = billingService.calculateBill(r, discountPercent);
+            double discountPercent = 0.0;
+            try {
+                discountPercent =
+                        Double.parseDouble(req.getParameter("discount"));
+            } catch (Exception ignored) {}
 
-            // extras total
+            String[] extras = req.getParameterValues("extra");
+
+            Bill baseBill =
+                    billingService.calculateBill(r, discountPercent);
+
+            Map<String, Double> servicePrices =
+                    DaoFactory.serviceDao()
+                            .getActiveServicePricesByCodes(extras);
+
             double extrasTotal = 0.0;
-            Map<String, Double> servicePrices = DaoFactory.serviceDao().getActiveServicePricesByCodes(extras);
-            for (String code : servicePrices.keySet()) {
-                extrasTotal += servicePrices.get(code);
+            for (double price : servicePrices.values())
+                extrasTotal += price;
+
+            double grandTotal =
+                    baseBill.getTotal() + extrasTotal;
+
+            int billId =
+                    saveBillWithItems(baseBill, grandTotal,
+                            extras, servicePrices);
+
+            if (billId <= 0) {
+                req.setAttribute("error",
+                        "Failed to save bill. Check database.");
+                req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
+                        .forward(req, resp);
+                return;
             }
 
-            double grandTotal = baseBill.getTotal() + extrasTotal;
-
-            // save bill row + get bill_id
-            int billId = saveBillAndReturnId(baseBill, grandTotal);
-
-            // save bill items (simple)
-            saveBillItem(billId, "Room Stay (after discount)", 1, baseBill.getTotal(), baseBill.getTotal());
-            if (extras != null) {
-                for (String code : extras) {
-                    Double price = servicePrices.get(code);
-                    if (price != null) {
-                        saveBillItem(billId, code, 1, price, price);
-                    }
-                }
-            }
-
-            // attributes for JSP
             req.setAttribute("bill", baseBill);
             req.setAttribute("reservation", r);
             req.setAttribute("extrasTotal", extrasTotal);
             req.setAttribute("grandTotal", grandTotal);
 
-            req.getRequestDispatcher("/WEB-INF/views/bill.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
+                    .forward(req, resp);
+
+        } catch (NumberFormatException e) {
+
+            req.setAttribute("error",
+                    "Reservation number must be numeric.");
+
+            req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
+                    .forward(req, resp);
+
+        } catch (RuntimeException e) {
+
+            req.setAttribute("error", e.getMessage());
+
+            req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
+                    .forward(req, resp);
 
         } catch (Exception e) {
-            req.setAttribute("error", "Please enter a valid reservation number.");
-            req.getRequestDispatcher("/WEB-INF/views/bill.jsp").forward(req, resp);
+
+            e.printStackTrace();
+
+            req.setAttribute("error",
+                    "Unexpected error. Check server console.");
+
+            req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
+                    .forward(req, resp);
         }
     }
 
-    private int saveBillAndReturnId(Bill bill, double grandTotal) {
-        String sql = "INSERT INTO bills(reservation_no,nights,rate,discount,total) VALUES(?,?,?,?,?)";
+    private int saveBillWithItems(
+            Bill bill,
+            double grandTotal,
+            String[] extras,
+            Map<String, Double> servicePrices) {
 
-        try (Connection con = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        String billSql =
+                "INSERT INTO bills(reservation_no,nights,rate,discount,total) VALUES(?,?,?,?,?)";
 
-            ps.setInt(1, bill.getReservationNo());
-            ps.setInt(2, bill.getNights());
-            ps.setDouble(3, bill.getRate());
-            ps.setDouble(4, bill.getDiscount());
-            ps.setDouble(5, grandTotal);
+        String itemSql =
+                "INSERT INTO bill_items(bill_id,item_name,qty,unit_price,total) VALUES(?,?,?,?,?)";
 
-            ps.executeUpdate();
+        try (Connection con =
+                     DBConnection.getInstance().getConnection()) {
 
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) return rs.getInt(1);
+            con.setAutoCommit(false);
+
+            int billId;
+
+            try (PreparedStatement ps =
+                         con.prepareStatement(billSql,
+                                 Statement.RETURN_GENERATED_KEYS)) {
+
+                ps.setInt(1, bill.getReservationNo());
+                ps.setInt(2, bill.getNights());
+                ps.setDouble(3, bill.getRate());
+                ps.setDouble(4, bill.getDiscount());
+                ps.setDouble(5, grandTotal);
+
+                ps.executeUpdate();
+
+                try (ResultSet rs =
+                             ps.getGeneratedKeys()) {
+
+                    if (!rs.next()) {
+                        con.rollback();
+                        return -1;
+                    }
+
+                    billId = rs.getInt(1);
+                }
+            }
+
+            try (PreparedStatement ps =
+                         con.prepareStatement(itemSql)) {
+
+                ps.setInt(1, billId);
+                ps.setString(2,
+                        "Room Stay (after discount)");
+                ps.setInt(3, 1);
+                ps.setDouble(4, bill.getTotal());
+                ps.setDouble(5, bill.getTotal());
+                ps.executeUpdate();
+            }
+
+            if (extras != null) {
+                for (String code : extras) {
+                    Double price =
+                            servicePrices.get(code);
+
+                    if (price != null) {
+                        try (PreparedStatement ps =
+                                     con.prepareStatement(itemSql)) {
+
+                            ps.setInt(1, billId);
+                            ps.setString(2, code);
+                            ps.setInt(3, 1);
+                            ps.setDouble(4, price);
+                            ps.setDouble(5, price);
+                            ps.executeUpdate();
+                        }
+                    }
+                }
+            }
+
+            con.commit();
+            return billId;
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return -1;
-    }
-
-    private void saveBillItem(int billId, String itemName, int qty, double unitPrice, double total) {
-        if (billId <= 0) return;
-
-        String sql = "INSERT INTO bill_items(bill_id,item_name,qty,unit_price,total) VALUES(?,?,?,?,?)";
-        try (Connection con = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, billId);
-            ps.setString(2, itemName);
-            ps.setInt(3, qty);
-            ps.setDouble(4, unitPrice);
-            ps.setDouble(5, total);
-            ps.executeUpdate();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            return -1;
         }
     }
 }

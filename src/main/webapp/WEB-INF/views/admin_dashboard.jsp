@@ -13,121 +13,207 @@
 <html>
 <head>
     <title>Admin Dashboard | Ocean View Resort</title>
+
     <link rel="stylesheet"
           href="<%=request.getContextPath()%>/assets/css/admin-dashboard.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="dashboard-wrapper">
+<div class="layout">
 
-    <!-- ===== HEADER ===== -->
-    <div class="header">
-        <div class="title">
-            🛡️ Admin Dashboard
-            <span class="badge">Manager Panel</span>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">🛡️ Admin Panel</div>
+
+        <ul class="menu">
+
+            <li class="active">
+                Dashboard
+            </li>
+
+            <li>
+                <a href="<%=request.getContextPath()%>/admin/users">
+                    Manage Users
+                </a>
+            </li>
+
+            <li>
+                <a href="<%=request.getContextPath()%>/admin/rooms">
+                    Rooms & Types
+                </a>
+            </li>
+
+            <li>
+                <a href="<%=request.getContextPath()%>/admin/rates">
+                    Room Rates
+                </a>
+            </li>
+
+            <li>
+                <a href="<%=request.getContextPath()%>/admin/services">
+                    Services
+                </a>
+            </li>
+
+            <li>
+                <a href="<%=request.getContextPath()%>/admin/reports">
+                    Reports
+                </a>
+            </li>
+
+            <li>
+                <a href="<%=request.getContextPath()%>/logout">
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <div class="page-header">
+
+            <h2>Admin Dashboard</h2>
+
+            <span class="badge">Ocean View Resort</span>
+
         </div>
 
-        <div class="nav">
-            <a href="<%=request.getContextPath()%>/admin/users">Users</a>
-            <a href="<%=request.getContextPath()%>/admin/reports">Reports</a>
-            <a href="<%=request.getContextPath()%>/logout">Logout</a>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+
+            <div class="card">
+
+                <label>Total Revenue</label>
+
+                <div class="value">
+                    LKR <%=String.format("%,.2f", revenue)%>
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <label>Active Reservations</label>
+
+                <div class="value">
+                    <%= (reservations != null) ? reservations.size() : 0 %>
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <label>System Status</label>
+
+                <div class="value online">
+                    ● Online
+                </div>
+
+            </div>
+
         </div>
-    </div>
 
-    <!-- ===== SUMMARY CARDS ===== -->
-    <div class="summary-grid">
 
-        <div class="summary-card revenue">
-            <h3>Total Revenue</h3>
-            <p>LKR <%=String.format("%,.2f", revenue)%></p>
+        <!-- Management Section -->
+        <div class="card">
+
+            <h3>System Management</h3>
+
+            <div class="management-grid">
+
+                <a class="btn primary"
+                   href="<%=request.getContextPath()%>/admin/rooms">
+                    Manage Rooms
+                </a>
+
+                <a class="btn primary"
+                   href="<%=request.getContextPath()%>/admin/rates">
+                    Manage Rates
+                </a>
+
+                <a class="btn primary"
+                   href="<%=request.getContextPath()%>/admin/services">
+                    Manage Services
+                </a>
+
+                <a class="btn primary"
+                   href="<%=request.getContextPath()%>/admin/users">
+                    Manage Users
+                </a>
+
+                <a class="btn primary"
+                   href="<%=request.getContextPath()%>/admin/reports">
+                    View Reports
+                </a>
+
+            </div>
+
         </div>
 
-        <div class="summary-card count">
+
+        <!-- Active Reservations Table -->
+        <div class="card">
+
             <h3>Active Reservations</h3>
-            <p><%= (reservations != null) ? reservations.size() : 0 %></p>
-        </div>
 
-        <div class="summary-card system">
-            <h3>System Status</h3>
-            <p class="online">Online</p>
-        </div>
+            <table class="table">
 
-    </div>
-
-    <!-- ===== MANAGEMENT SECTION ===== -->
-    <div class="management-section">
-        <h2>System Management</h2>
-
-        <div class="management-grid">
-
-            <!-- ✅ UPDATED: One unified Room Management page -->
-            <a class="manage-btn"
-               href="<%=request.getContextPath()%>/admin/rooms">
-                Manage Rooms & Types
-            </a>
-
-            <a class="manage-btn"
-               href="<%=request.getContextPath()%>/admin/rates">
-                Manage Room Rates
-            </a>
-
-            <a class="manage-btn"
-               href="<%=request.getContextPath()%>/admin/services">
-                Manage Services
-            </a>
-
-            <a class="manage-btn"
-               href="<%=request.getContextPath()%>/admin/users">
-                Manage Users
-            </a>
-
-        </div>
-    </div>
-
-    <!-- ===== ACTIVE RESERVATIONS ===== -->
-    <div class="reservation-section">
-        <h2>Active Reservations</h2>
-
-        <table class="reservation-table">
-            <tr>
-                <th>ID</th>
-                <th>Guest</th>
-                <th>Room Type</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-
-            <% if (reservations != null && !reservations.isEmpty()) { %>
-                <% for (Reservation r : reservations) { %>
-                    <tr>
-                        <td><%=r.getReservationNo()%></td>
-                        <td><%=r.getGuest().getName()%></td>
-                        <td><%=r.getRoomType()%></td>
-                        <td><%=r.getStatus()%></td>
-                        <td>
-                            <a class="view-btn"
-                               href="<%=request.getContextPath()%>/receptionist/reservations/view?id=<%=r.getReservationNo()%>">
-                                View
-                            </a>
-                        </td>
-                    </tr>
-                <% } %>
-            <% } else { %>
                 <tr>
-                    <td colspan="5" style="text-align:center;">
-                        No active reservations.
-                    </td>
+                    <th>ID</th>
+                    <th>Guest</th>
+                    <th>Room Type</th>
+                    <th>Status</th>
                 </tr>
-            <% } %>
 
-        </table>
-    </div>
+                <% if (reservations != null && !reservations.isEmpty()) { %>
+
+                    <% for (Reservation res : reservations) { %>
+
+                        <tr>
+
+                            <td><%=res.getReservationNo()%></td>
+
+                            <td><%=res.getGuest().getName()%></td>
+
+                            <td><%=res.getRoomType()%></td>
+
+                            <td>
+                                <span class="status">
+                                    <%=res.getStatus()%>
+                                </span>
+                            </td>
+
+                        </tr>
+
+                    <% } %>
+
+                <% } else { %>
+
+                    <tr>
+                        <td colspan="4">No active reservations</td>
+                    </tr>
+
+                <% } %>
+
+            </table>
+
+        </div>
+
+    </main>
 
 </div>
-
-<script>
-    window.APP_CTX = "<%=request.getContextPath()%>";
-</script>
 
 <script src="<%=request.getContextPath()%>/assets/js/app.js"></script>
 

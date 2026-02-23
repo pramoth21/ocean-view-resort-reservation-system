@@ -9,51 +9,77 @@
 <html>
 <head>
   <title>Login | Ocean View Resort</title>
+
   <link rel="stylesheet"
         href="<%=request.getContextPath()%>/assets/css/login.css">
+
+  <!-- Modern Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="login-wrapper">
 
-    <div class="login-card">
+    <!-- Background Image Section -->
+    <div class="login-bg">
+        <div class="bg-overlay"></div>
 
-        <div class="login-header">
-            <h2>🌿 Ocean View Resort</h2>
-            <p class="role"><%=role%> Login</p>
+        <div class="bg-content">
+            <h1>EXPLORE OCEAN<br>HORIZONS</h1>
+            <p>
+                Sustainable hospitality begins here.
+                Welcome to Ocean View Resort management portal.
+            </p>
         </div>
+    </div>
 
-        <% if(error != null){ %>
-            <div class="error-box"><%=error%></div>
-        <% } %>
+    <!-- Glass Login Card -->
+    <div class="login-card-container">
 
-        <form method="post"
-              action="<%=request.getContextPath()%>/login">
+        <div class="glass-card">
 
-            <input type="hidden" name="role" value="<%=role%>">
-
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text"
-                       name="username"
-                       required>
+            <div class="login-header">
+                <h2>Ocean View Resort</h2>
+                <p class="role"><%=role%> Login</p>
             </div>
 
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password"
-                       name="password"
-                       required>
+            <% if(error != null){ %>
+                <div class="error-box"><%=error%></div>
+            <% } %>
+
+            <form method="post"
+                  action="<%=request.getContextPath()%>/login">
+
+                <input type="hidden" name="role" value="<%=role%>">
+
+                <div class="form-group">
+                    <label>Email / Username</label>
+                    <input type="text"
+                           name="username"
+                           placeholder="Enter your username"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password"
+                           name="password"
+                           placeholder="Enter your password"
+                           required>
+                </div>
+
+                <button class="btn-login">
+                    SIGN IN
+                </button>
+
+            </form>
+
+            <div class="login-footer">
+                <a href="<%=request.getContextPath()%>/home">
+                    ← Back to Home
+                </a>
             </div>
 
-            <button class="btn-login">
-                Login →
-            </button>
-
-        </form>
-
-        <div class="login-footer">
-            <a href="<%=request.getContextPath()%>/home">Back to Home</a>
         </div>
 
     </div>

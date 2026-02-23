@@ -15,92 +15,124 @@
 </head>
 <body>
 
-<div class="dashboard-wrapper">
+<div class="layout">
 
-  <!-- TOP BAR -->
-  <div class="topbar">
-      <div class="brand">
-          🧾 Receptionist Dashboard
-          <span class="badge">Front Desk</span>
-      </div>
-      <div class="nav">
-          <a href="<%=request.getContextPath()%>/receptionist/reservations/add">Add Reservation</a>
-          <a href="<%=request.getContextPath()%>/receptionist/bill">Generate Bill</a>
-          <a href="<%=request.getContextPath()%>/help">Help</a>
-          <a href="#" onclick="confirmLogout()">Logout</a>
-      </div>
-  </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            🌊 Ocean View
+        </div>
 
-  <!-- SUMMARY -->
-  <div class="summary-section">
+        <ul class="menu">
+            <li class="active">Dashboard</li>
+            <li>
+                <a href="<%=request.getContextPath()%>/receptionist/reservations/add">
+                    Add Reservation
+                </a>
+            </li>
+            <li>
+                <a href="<%=request.getContextPath()%>/receptionist/bill">
+                    Generate Bill
+                </a>
+            </li>
+            <li>
+                <a href="<%=request.getContextPath()%>/help">
+                    Help
+                </a>
+            </li>
+            <li>
+                <!-- ✅ FIXED LOGOUT -->
+                <a href="javascript:void(0)" onclick="confirmLogout()">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </aside>
 
-      <div class="summary-card">
-          <h3>Total Active Reservations</h3>
-          <p><%=total%></p>
-      </div>
 
-      <div class="summary-card">
-          <h3>Today's Date</h3>
-          <p><%=java.time.LocalDate.now()%></p>
-      </div>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
 
-      <div class="summary-card action-card">
-          <a href="<%=request.getContextPath()%>/receptionist/reservations/add">
-              + New Booking
-          </a>
-      </div>
+        <!-- HEADER -->
+        <div class="dashboard-header">
+            <h2>Receptionist Dashboard</h2>
+            <span class="date"><%=java.time.LocalDate.now()%></span>
+        </div>
 
-  </div>
+        <!-- SUMMARY CARDS -->
+        <div class="summary-grid">
 
-  <!-- TABLE -->
-  <div class="table-card">
+            <div class="summary-box">
+                <h4>Total Reservations</h4>
+                <p><%=total%></p>
+            </div>
 
-      <div class="table-header">
-          <h2>Active Reservations</h2>
-          <input type="text"
-                 id="tableSearch"
-                 placeholder="Search by Guest Name..."
-                 onkeyup="filterTable()">
-      </div>
+            <div class="summary-box action">
+                <a href="<%=request.getContextPath()%>/receptionist/reservations/add">
+                    + New Booking
+                </a>
+            </div>
 
-      <table id="reservationTable">
-          <thead>
-              <tr>
-                  <th>ID</th>
-                  <th>Guest</th>
-                  <th>Room Type</th>
-                  <th>Check-in</th>
-                  <th>Check-out</th>
-                  <th>Status</th>
-                  <th>Action</th>
-              </tr>
-          </thead>
-          <tbody>
-          <% if(reservations != null){ %>
-              <% for(Reservation r : reservations){ %>
-              <tr>
-                  <td><%=r.getReservationNo()%></td>
-                  <td><%=r.getGuest().getName()%></td>
-                  <td><%=r.getRoomType()%></td>
-                  <td><%=r.getCheckIn()%></td>
-                  <td><%=r.getCheckOut()%></td>
-                  <td><span class="status"><%=r.getStatus()%></span></td>
-                  <td>
-                      <a class="btn-view"
-                         href="<%=request.getContextPath()%>/receptionist/reservations/view?id=<%=r.getReservationNo()%>">
-                          View
-                      </a>
-                  </td>
-              </tr>
-              <% } %>
-          <% } %>
-          </tbody>
-      </table>
+        </div>
 
-  </div>
+        <!-- TABLE SECTION -->
+        <div class="table-container">
+
+            <div class="table-top">
+                <h3>Active Reservations</h3>
+                <input type="text"
+                       id="tableSearch"
+                       placeholder="Search by Guest..."
+                       onkeyup="filterTable()">
+            </div>
+
+            <table id="reservationTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Guest</th>
+                        <th>Room</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% if(reservations != null){ %>
+                    <% for(Reservation r : reservations){ %>
+                    <tr>
+                        <td><%=r.getReservationNo()%></td>
+                        <td><%=r.getGuest().getName()%></td>
+                        <td><%=r.getRoomType()%></td>
+                        <td><%=r.getCheckIn()%></td>
+                        <td><%=r.getCheckOut()%></td>
+                        <td>
+                            <span class="status-badge">
+                                <%=r.getStatus()%>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="view-btn"
+                               href="<%=request.getContextPath()%>/receptionist/reservations/view?id=<%=r.getReservationNo()%>">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    <% } %>
+                <% } %>
+                </tbody>
+            </table>
+
+        </div>
+
+    </main>
 
 </div>
 
+<!-- ============================================
+     EXISTING TABLE FILTER
+     ============================================ -->
 <script>
 function filterTable(){
     const input = document.getElementById("tableSearch");
@@ -114,6 +146,10 @@ function filterTable(){
 }
 </script>
 
+<script>
+  window.APP_CTX = "<%=request.getContextPath()%>";
+</script>
 <script src="<%=request.getContextPath()%>/assets/js/app.js"></script>
+
 </body>
 </html>
