@@ -105,6 +105,15 @@
         <url-pattern>/receptionist/reservations/cancel</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ReservationStatus</servlet-name>
+        <servlet-class>com.oceanview.web.servlet.ReservationStatusServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReservationStatus</servlet-name>
+        <url-pattern>/receptionist/reservations/status</url-pattern>
+    </servlet-mapping>
+
     <!-- Billing -->
     <servlet>
         <servlet-name>Bill</servlet-name>

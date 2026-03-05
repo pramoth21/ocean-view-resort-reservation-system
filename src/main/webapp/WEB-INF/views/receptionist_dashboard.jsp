@@ -79,7 +79,7 @@
         <div class="table-container">
 
             <div class="table-top">
-                <h3>Active Reservations</h3>
+                <h3>Reservations</h3>
                 <input type="text"
                        id="tableSearch"
                        placeholder="Search by Guest..."

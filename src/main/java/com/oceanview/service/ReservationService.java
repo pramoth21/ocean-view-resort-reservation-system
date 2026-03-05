@@ -28,7 +28,8 @@ public class ReservationService {
         // If guest already has ID, skip registering (re-use existing guest)
         if (guest.getGuestId() > 0) {
             Guest dbGuest = guestDao.findById(guest.getGuestId());
-            if (dbGuest == null) return -1;
+            if (dbGuest == null)
+                return -1;
             reservation.setGuest(dbGuest);
             return reservationDao.insert(reservation);
         }
@@ -57,6 +58,10 @@ public class ReservationService {
 
     public boolean cancelReservation(int reservationNo) {
         return reservationDao.cancel(reservationNo);
+    }
+
+    public boolean updateStatus(int reservationNo, String status) {
+        return reservationDao.updateStatus(reservationNo, status);
     }
 
     public List<Reservation> listActiveReservations() {

@@ -18,13 +18,15 @@ public class ReservationDaoImpl implements ReservationDao {
                 "VALUES (?, ?, ?, ?, ?, 'ACTIVE')";
 
         try (Connection con = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, r.getGuest().getGuestId());
             ps.setString(2, r.getRoomType());
 
-            if (r.getRoomId() == null) ps.setNull(3, Types.INTEGER);
-            else ps.setInt(3, r.getRoomId());
+            if (r.getRoomId() == null)
+                ps.setNull(3, Types.INTEGER);
+            else
+                ps.setInt(3, r.getRoomId());
 
             ps.setDate(4, Date.valueOf(r.getCheckIn()));
             ps.setDate(5, Date.valueOf(r.getCheckOut()));
@@ -33,7 +35,8 @@ public class ReservationDaoImpl implements ReservationDao {
 
             if (rows > 0) {
                 ResultSet keys = ps.getGeneratedKeys();
-                if (keys.next()) return keys.getInt(1);
+                if (keys.next())
+                    return keys.getInt(1);
             }
 
         } catch (Exception e) {
@@ -45,15 +48,14 @@ public class ReservationDaoImpl implements ReservationDao {
     @Override
     public Reservation findById(int reservationNo) {
 
-        String sql =
-                "SELECT r.reservation_no, r.room_type, r.room_id, r.check_in, r.check_out, r.status, " +
-                        "g.guest_id, g.name, g.address, g.contact_number " +
-                        "FROM reservations r " +
-                        "JOIN guests g ON r.guest_id = g.guest_id " +
-                        "WHERE r.reservation_no = ?";
+        String sql = "SELECT r.reservation_no, r.room_type, r.room_id, r.check_in, r.check_out, r.status, " +
+                "g.guest_id, g.name, g.address, g.contact_number " +
+                "FROM reservations r " +
+                "JOIN guests g ON r.guest_id = g.guest_id " +
+                "WHERE r.reservation_no = ?";
 
         try (Connection con = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, reservationNo);
             ResultSet rs = ps.executeQuery();
@@ -71,17 +73,18 @@ public class ReservationDaoImpl implements ReservationDao {
     @Override
     public boolean update(Reservation r) {
 
-        String sql =
-                "UPDATE reservations SET room_type=?, room_id=?, check_in=?, check_out=? " +
-                        "WHERE reservation_no=? AND status='ACTIVE'";
+        String sql = "UPDATE reservations SET room_type=?, room_id=?, check_in=?, check_out=? " +
+                "WHERE reservation_no=? AND status='ACTIVE'";
 
         try (Connection con = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, r.getRoomType());
 
-            if (r.getRoomId() == null) ps.setNull(2, Types.INTEGER);
-            else ps.setInt(2, r.getRoomId());
+            if (r.getRoomId() == null)
+                ps.setNull(2, Types.INTEGER);
+            else
+                ps.setInt(2, r.getRoomId());
 
             ps.setDate(3, Date.valueOf(r.getCheckIn()));
             ps.setDate(4, Date.valueOf(r.getCheckOut()));
@@ -98,13 +101,30 @@ public class ReservationDaoImpl implements ReservationDao {
     @Override
     public boolean cancel(int reservationNo) {
 
-        String sql =
-                "UPDATE reservations SET status='CANCELLED' WHERE reservation_no=? AND status='ACTIVE'";
+        String sql = "UPDATE reservations SET status='CANCELLED' WHERE reservation_no=? AND status='ACTIVE'";
 
         try (Connection con = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, reservationNo);
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateStatus(int reservationNo, String status) {
+
+        String sql = "UPDATE reservations SET status=? WHERE reservation_no=?";
+
+        try (Connection con = DBConnection.getInstance().getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, status);
+            ps.setInt(2, reservationNo);
             return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
@@ -118,17 +138,16 @@ public class ReservationDaoImpl implements ReservationDao {
 
         List<Reservation> list = new ArrayList<>();
 
-        String sql =
-                "SELECT r.reservation_no, r.room_type, r.room_id, r.check_in, r.check_out, r.status, " +
-                        "g.guest_id, g.name, g.address, g.contact_number " +
-                        "FROM reservations r " +
-                        "JOIN guests g ON r.guest_id = g.guest_id " +
-                        "WHERE r.status='ACTIVE' " +
-                        "ORDER BY r.reservation_no DESC";
+        String sql = "SELECT r.reservation_no, r.room_type, r.room_id, r.check_in, r.check_out, r.status, " +
+                "g.guest_id, g.name, g.address, g.contact_number " +
+                "FROM reservations r " +
+                "JOIN guests g ON r.guest_id = g.guest_id " +
+                "WHERE r.status IN ('ACTIVE', 'COMPLETED', 'CANCELLED') " +
+                "ORDER BY r.reservation_no DESC";
 
         try (Connection con = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 list.add(map(rs));
@@ -146,8 +165,7 @@ public class ReservationDaoImpl implements ReservationDao {
                 rs.getInt("guest_id"),
                 rs.getString("name"),
                 rs.getString("address"),
-                rs.getString("contact_number")
-        );
+                rs.getString("contact_number"));
 
         Reservation reservation = new Reservation();
         reservation.setReservationNo(rs.getInt("reservation_no"));
@@ -155,8 +173,10 @@ public class ReservationDaoImpl implements ReservationDao {
         reservation.setRoomType(rs.getString("room_type"));
 
         int rid = rs.getInt("room_id");
-        if (rs.wasNull()) reservation.setRoomId(null);
-        else reservation.setRoomId(rid);
+        if (rs.wasNull())
+            reservation.setRoomId(null);
+        else
+            reservation.setRoomId(rid);
 
         reservation.setCheckIn(rs.getDate("check_in").toLocalDate());
         reservation.setCheckOut(rs.getDate("check_out").toLocalDate());

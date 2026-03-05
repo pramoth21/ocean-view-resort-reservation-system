@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.util.List,com.oceanview.model.RoomType" %>
 <%
   com.oceanview.model.Reservation r =
       (com.oceanview.model.Reservation) request.getAttribute("reservation");
@@ -120,20 +121,17 @@
 
                   <select name="roomType" class="input">
 
-                      <option value="STANDARD"
-                        <%= "STANDARD".equals(r.getRoomType()) ? "selected" : "" %>>
-                        STANDARD
+                      <option value="">Select Room Type</option>
+
+                      <% List<RoomType> roomTypes = (List<RoomType>) request.getAttribute("roomTypes");
+                         if (roomTypes != null) { for (RoomType t : roomTypes) { %>
+
+                      <option value="<%= t.getTypeCode() %>"
+                        <%= t.getTypeCode().equals(r.getRoomType()) ? "selected" : "" %>>
+                        <%= t.getTypeCode() %> - <%= t.getTypeName() %>
                       </option>
 
-                      <option value="DELUXE"
-                        <%= "DELUXE".equals(r.getRoomType()) ? "selected" : "" %>>
-                        DELUXE
-                      </option>
-
-                      <option value="SUITE"
-                        <%= "SUITE".equals(r.getRoomType()) ? "selected" : "" %>>
-                        SUITE
-                      </option>
+                      <% } } %>
 
                   </select>
 
