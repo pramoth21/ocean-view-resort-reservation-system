@@ -191,6 +191,9 @@
 
             </div>
 
+            <script>
+                window.APP_CTX = "<%=request.getContextPath()%>";
+            </script>
             <script src="<%=request.getContextPath()%>/assets/js/app.js"></script>
 
         </body>

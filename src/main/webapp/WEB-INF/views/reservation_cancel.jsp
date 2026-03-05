@@ -1,102 +1,106 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%
-  String error = (String) request.getAttribute("error");
-%>
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Cancel Reservation | Ocean View Resort</title>
+    <% String error=(String) request.getAttribute("error"); %>
+        <!DOCTYPE html>
+        <html>
 
-  <link rel="stylesheet"
-        href="<%=request.getContextPath()%>/assets/css/cancel-reservation.css">
+        <head>
+            <title>Cancel Reservation | Ocean View Resort</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
+            <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/cancel-reservation.css">
 
-<div class="layout">
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+                rel="stylesheet">
+        </head>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
+        <body>
 
-      <div class="logo">🌊 Ocean View</div>
+            <div class="layout">
 
-      <ul class="menu">
+                <!-- SIDEBAR -->
+                <aside class="sidebar">
 
-          <li>
-              <a href="<%=request.getContextPath()%>/receptionist">
-                  Dashboard
-              </a>
-          </li>
+                    <div class="logo">🌊 Ocean View</div>
 
-          <li>
-              <a href="<%=request.getContextPath()%>/receptionist/reservations/add">
-                  Add Reservation
-              </a>
-          </li>
+                    <ul class="menu">
 
-          <li class="active">
-              Cancel Reservation
-          </li>
+                        <li>
+                            <a href="<%=request.getContextPath()%>/receptionist">
+                                Dashboard
+                            </a>
+                        </li>
 
-          <li>
-              <a href="<%=request.getContextPath()%>/receptionist/bill">
-                  Generate Bill
-              </a>
-          </li>
+                        <li>
+                            <a href="<%=request.getContextPath()%>/receptionist/reservations/add">
+                                Add Reservation
+                            </a>
+                        </li>
 
-          <li>
-              <a href="javascript:void(0)" onclick="confirmLogout()">
-                  Logout
-              </a>
-          </li>
+                        <li class="active">
+                            Cancel Reservation
+                        </li>
 
-      </ul>
+                        <li>
+                            <a href="<%=request.getContextPath()%>/receptionist/bill">
+                                Generate Bill
+                            </a>
+                        </li>
 
-  </aside>
+                        <li>
+                            <a href="javascript:void(0)" onclick="confirmLogout()">
+                                Logout
+                            </a>
+                        </li>
 
+                    </ul>
 
-  <!-- MAIN CONTENT -->
-  <main class="main-content">
-
-      <div class="page-header">
-
-          <h2>❌ Cancel Reservation</h2>
-
-      </div>
+                </aside>
 
 
-      <div class="card cancel-card">
+                <!-- MAIN CONTENT -->
+                <main class="main-content">
 
-          <% if(error != null){ %>
-              <div class="msg err"><%=error%></div>
-          <% } %>
+                    <div class="page-header">
 
-          <form method="post">
+                        <h2>❌ Cancel Reservation</h2>
 
-              <div class="form-group">
+                    </div>
 
-                  <label>Reservation Number</label>
 
-                  <input class="input"
-                         name="id"
-                         placeholder="Enter reservation number">
+                    <div class="card cancel-card">
 
-              </div>
+                        <% if(error !=null){ %>
+                            <div class="msg err">
+                                <%=error%>
+                            </div>
+                            <% } %>
 
-              <button class="btn danger">
-                  Confirm Cancellation
-              </button>
+                                <form method="post">
 
-          </form>
+                                    <div class="form-group">
 
-      </div>
+                                        <label>Reservation Number</label>
 
-  </main>
+                                        <input class="input" name="id" placeholder="Enter reservation number">
 
-</div>
+                                    </div>
 
-<script src="<%=request.getContextPath()%>/assets/js/app.js"></script>
+                                    <button class="btn danger">
+                                        Confirm Cancellation
+                                    </button>
 
-</body>
-</html>
+                                </form>
+
+                    </div>
+
+                </main>
+
+            </div>
+
+            <script>
+                window.APP_CTX = "<%=request.getContextPath()%>";
+            </script>
+            <script src="<%=request.getContextPath()%>/assets/js/app.js"></script>
+
+        </body>
+
+        </html>

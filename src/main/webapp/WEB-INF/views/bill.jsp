@@ -81,21 +81,19 @@
 
                                         <div class="form-group">
                                             <label>Extras</label>
-
-                                            <label class="check">
-                                                <input type="checkbox" name="extra" value="POOL">
-                                                Pool Usage
-                                            </label>
-
-                                            <label class="check">
-                                                <input type="checkbox" name="extra" value="DINING">
-                                                Dining Package
-                                            </label>
-
-                                            <label class="check">
-                                                <input type="checkbox" name="extra" value="LAUNDRY">
-                                                Laundry
-                                            </label>
+                                            <% java.util.List<com.oceanview.model.ServiceItem> itemList =
+                                                (java.util.List<com.oceanview.model.ServiceItem>)
+                                                    request.getAttribute("services");
+                                                    if(itemList != null) {
+                                                    for(com.oceanview.model.ServiceItem s : itemList) {
+                                                    if(s.isActive()) {
+                                                    %>
+                                                    <label class="check">
+                                                        <input type="checkbox" name="extra"
+                                                            value="<%=s.getServiceCode()%>">
+                                                        <%=s.getServiceName()%>
+                                                    </label>
+                                                    <% } } } %>
                                         </div>
 
                                         <button class="btn primary">
@@ -190,6 +188,9 @@
 
             </div>
 
+            <script>
+                window.APP_CTX = "<%=request.getContextPath()%>";
+            </script>
             <script src="<%=request.getContextPath()%>/assets/js/app.js"></script>
             <script>
                 function downloadBillPDF() {

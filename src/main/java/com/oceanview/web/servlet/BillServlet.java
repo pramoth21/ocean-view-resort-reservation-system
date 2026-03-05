@@ -21,6 +21,7 @@ public class BillServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        req.setAttribute("services", DaoFactory.serviceDao().findAll());
         req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
                 .forward(req, resp);
     }
@@ -35,6 +36,7 @@ public class BillServlet extends HttpServlet {
 
             if (idStr == null || idStr.trim().isEmpty()) {
                 req.setAttribute("error", "Reservation number is required.");
+                req.setAttribute("services", DaoFactory.serviceDao().findAll());
                 req.getRequestDispatcher("/WEB-INF/views/bill.jsp").forward(req, resp);
                 return;
             }
@@ -45,39 +47,37 @@ public class BillServlet extends HttpServlet {
 
             if (r == null) {
                 req.setAttribute("error", "Reservation not found.");
+                req.setAttribute("services", DaoFactory.serviceDao().findAll());
                 req.getRequestDispatcher("/WEB-INF/views/bill.jsp").forward(req, resp);
                 return;
             }
 
             double discountPercent = 0.0;
             try {
-                discountPercent =
-                        Double.parseDouble(req.getParameter("discount"));
-            } catch (Exception ignored) {}
+                discountPercent = Double.parseDouble(req.getParameter("discount"));
+            } catch (Exception ignored) {
+            }
 
             String[] extras = req.getParameterValues("extra");
 
-            Bill baseBill =
-                    billingService.calculateBill(r, discountPercent);
+            Bill baseBill = billingService.calculateBill(r, discountPercent);
 
-            Map<String, Double> servicePrices =
-                    DaoFactory.serviceDao()
-                            .getActiveServicePricesByCodes(extras);
+            Map<String, Double> servicePrices = DaoFactory.serviceDao()
+                    .getActiveServicePricesByCodes(extras);
 
             double extrasTotal = 0.0;
             for (double price : servicePrices.values())
                 extrasTotal += price;
 
-            double grandTotal =
-                    baseBill.getTotal() + extrasTotal;
+            double grandTotal = baseBill.getTotal() + extrasTotal;
 
-            int billId =
-                    saveBillWithItems(baseBill, grandTotal,
-                            extras, servicePrices);
+            int billId = saveBillWithItems(baseBill, grandTotal,
+                    extras, servicePrices);
 
             if (billId <= 0) {
                 req.setAttribute("error",
                         "Failed to save bill. Check database.");
+                req.setAttribute("services", DaoFactory.serviceDao().findAll());
                 req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
                         .forward(req, resp);
                 return;
@@ -87,6 +87,7 @@ public class BillServlet extends HttpServlet {
             req.setAttribute("reservation", r);
             req.setAttribute("extrasTotal", extrasTotal);
             req.setAttribute("grandTotal", grandTotal);
+            req.setAttribute("services", DaoFactory.serviceDao().findAll());
 
             req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
                     .forward(req, resp);
@@ -95,6 +96,7 @@ public class BillServlet extends HttpServlet {
 
             req.setAttribute("error",
                     "Reservation number must be numeric.");
+            req.setAttribute("services", DaoFactory.serviceDao().findAll());
 
             req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
                     .forward(req, resp);
@@ -102,6 +104,7 @@ public class BillServlet extends HttpServlet {
         } catch (RuntimeException e) {
 
             req.setAttribute("error", e.getMessage());
+            req.setAttribute("services", DaoFactory.serviceDao().findAll());
 
             req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
                     .forward(req, resp);
@@ -112,6 +115,7 @@ public class BillServlet extends HttpServlet {
 
             req.setAttribute("error",
                     "Unexpected error. Check server console.");
+            req.setAttribute("services", DaoFactory.serviceDao().findAll());
 
             req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
                     .forward(req, resp);
@@ -124,22 +128,18 @@ public class BillServlet extends HttpServlet {
             String[] extras,
             Map<String, Double> servicePrices) {
 
-        String billSql =
-                "INSERT INTO bills(reservation_no,nights,rate,discount,total) VALUES(?,?,?,?,?)";
+        String billSql = "INSERT INTO bills(reservation_no,nights,rate,discount,total) VALUES(?,?,?,?,?)";
 
-        String itemSql =
-                "INSERT INTO bill_items(bill_id,item_name,qty,unit_price,total) VALUES(?,?,?,?,?)";
+        String itemSql = "INSERT INTO bill_items(bill_id,item_name,qty,unit_price,total) VALUES(?,?,?,?,?)";
 
-        try (Connection con =
-                     DBConnection.getInstance().getConnection()) {
+        try (Connection con = DBConnection.getInstance().getConnection()) {
 
             con.setAutoCommit(false);
 
             int billId;
 
-            try (PreparedStatement ps =
-                         con.prepareStatement(billSql,
-                                 Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement ps = con.prepareStatement(billSql,
+                    Statement.RETURN_GENERATED_KEYS)) {
 
                 ps.setInt(1, bill.getReservationNo());
                 ps.setInt(2, bill.getNights());
@@ -149,8 +149,7 @@ public class BillServlet extends HttpServlet {
 
                 ps.executeUpdate();
 
-                try (ResultSet rs =
-                             ps.getGeneratedKeys()) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
 
                     if (!rs.next()) {
                         con.rollback();
@@ -161,8 +160,7 @@ public class BillServlet extends HttpServlet {
                 }
             }
 
-            try (PreparedStatement ps =
-                         con.prepareStatement(itemSql)) {
+            try (PreparedStatement ps = con.prepareStatement(itemSql)) {
 
                 ps.setInt(1, billId);
                 ps.setString(2,
@@ -175,12 +173,10 @@ public class BillServlet extends HttpServlet {
 
             if (extras != null) {
                 for (String code : extras) {
-                    Double price =
-                            servicePrices.get(code);
+                    Double price = servicePrices.get(code);
 
                     if (price != null) {
-                        try (PreparedStatement ps =
-                                     con.prepareStatement(itemSql)) {
+                        try (PreparedStatement ps = con.prepareStatement(itemSql)) {
 
                             ps.setInt(1, billId);
                             ps.setString(2, code);
