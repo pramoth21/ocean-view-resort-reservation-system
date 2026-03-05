@@ -152,6 +152,10 @@
         <servlet-name>UserManage</servlet-name>
         <url-pattern>/admin/users</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserManage</servlet-name>
+        <url-pattern>/admin/users/delete</url-pattern>
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>UserCreate</servlet-name>
