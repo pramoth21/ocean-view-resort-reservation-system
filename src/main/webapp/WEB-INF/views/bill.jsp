@@ -67,40 +67,49 @@
                                 </div>
                                 <% } %>
 
-                                    <form method="post">
-
-                                        <div class="form-group">
-                                            <label>Reservation Number</label>
-                                            <input class="input" name="id">
+                                    <% if(Boolean.TRUE.equals(request.getAttribute("noBillFound"))){ %>
+                                        <div class="msg warn"
+                                            style="background: #fff7ed; color: #9a3412; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #f97316;">
+                                            <strong>No Bill Calculated:</strong> This reservation does not have a bill
+                                            calculated yet.
                                         </div>
+                                        <% } %>
 
-                                        <div class="form-group">
-                                            <label>Discount (%)</label>
-                                            <input class="input" name="discount" value="0">
-                                        </div>
+                                            <form method="post">
 
-                                        <div class="form-group">
-                                            <label>Extras</label>
-                                            <% java.util.List<com.oceanview.model.ServiceItem> itemList =
-                                                (java.util.List<com.oceanview.model.ServiceItem>)
-                                                    request.getAttribute("services");
-                                                    if(itemList != null) {
-                                                    for(com.oceanview.model.ServiceItem s : itemList) {
-                                                    if(s.isActive()) {
-                                                    %>
-                                                    <label class="check">
-                                                        <input type="checkbox" name="extra"
-                                                            value="<%=s.getServiceCode()%>">
-                                                        <%=s.getServiceName()%>
-                                                    </label>
-                                                    <% } } } %>
-                                        </div>
+                                                <div class="form-group">
+                                                    <label>Reservation Number</label>
+                                                    <input class="input" name="id"
+                                                        value="<%= r != null ? r.getReservationNo() : "" %>">
+                                                </div>
 
-                                        <button class="btn primary">
-                                            Calculate Bill
-                                        </button>
+                                                <div class="form-group">
+                                                    <label>Discount (%)</label>
+                                                    <input class="input" name="discount" value="0">
+                                                </div>
 
-                                    </form>
+                                                <div class="form-group">
+                                                    <label>Extras</label>
+                                                    <% java.util.List<com.oceanview.model.ServiceItem> itemList =
+                                                        (java.util.List<com.oceanview.model.ServiceItem>)
+                                                            request.getAttribute("services");
+                                                            if(itemList != null) {
+                                                            for(com.oceanview.model.ServiceItem s : itemList) {
+                                                            if(s.isActive()) {
+                                                            %>
+                                                            <label class="check">
+                                                                <input type="checkbox" name="extra"
+                                                                    value="<%=s.getServiceCode()%>">
+                                                                <%=s.getServiceName()%>
+                                                            </label>
+                                                            <% } } } %>
+                                                </div>
+
+                                                <button class="btn primary">
+                                                    Calculate Bill
+                                                </button>
+
+                                            </form>
 
                         </div>
 

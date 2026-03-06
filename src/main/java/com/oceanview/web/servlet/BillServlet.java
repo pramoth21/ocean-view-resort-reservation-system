@@ -21,9 +21,87 @@ public class BillServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
+        String idStr = req.getParameter("id");
+        if (idStr != null && !idStr.trim().isEmpty()) {
+            try {
+                int reservationId = Integer.parseInt(idStr.trim());
+                Reservation r = reservationService.getReservation(reservationId);
+
+                if (r != null) {
+                    req.setAttribute("reservation", r);
+                    Bill existingBill = findExistingBill(reservationId);
+                    if (existingBill != null) {
+                        req.setAttribute("bill", existingBill);
+                        req.setAttribute("extrasTotal", getExtrasTotal(reservationId));
+                        req.setAttribute("grandTotal", existingBill.getTotal());
+                    } else {
+                        req.setAttribute("noBillFound", true);
+                    }
+                } else {
+                    req.setAttribute("error", "Reservation not found.");
+                }
+            } catch (NumberFormatException e) {
+                req.setAttribute("error", "Invalid Reservation ID.");
+            }
+        }
+
         req.setAttribute("services", DaoFactory.serviceDao().findAll());
         req.getRequestDispatcher("/WEB-INF/views/bill.jsp")
                 .forward(req, resp);
+    }
+
+    private Bill findExistingBill(int reservationNo) {
+        String sql = "SELECT * FROM bills WHERE reservation_no = ? ORDER BY bill_id DESC LIMIT 1";
+        try (Connection con = DBConnection.getInstance().getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, reservationNo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Bill(
+                            rs.getInt("reservation_no"),
+                            rs.getInt("nights"),
+                            rs.getDouble("rate"),
+                            rs.getDouble("discount"),
+                            rs.getDouble("total"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private double getExtrasTotal(int reservationNo) {
+        // Since we are fetching the latest bill, we need to find its ID first
+        String billIdSql = "SELECT bill_id FROM bills WHERE reservation_no = ? ORDER BY bill_id DESC LIMIT 1";
+        String extrasSql = "SELECT SUM(total) as extras_sum FROM bill_items WHERE bill_id = ? AND item_name != 'Room Stay (after discount)'";
+
+        try (Connection con = DBConnection.getInstance().getConnection()) {
+            int billId = -1;
+            try (PreparedStatement ps = con.prepareStatement(billIdSql)) {
+                ps.setInt(1, reservationNo);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        billId = rs.getInt("bill_id");
+                    }
+                }
+            }
+
+            if (billId != -1) {
+                try (PreparedStatement ps = con.prepareStatement(extrasSql)) {
+                    ps.setInt(1, billId);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            return rs.getDouble("extras_sum");
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0.0;
     }
 
     @Override
